@@ -7,12 +7,15 @@ const connectionString = mongoS;
 
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-    let state = req.query.state;
+router.get('/:state', function(req, res, next) {
+    let state = req.params.state;
+    let query = req.query;
+
     MongoClient.connect(connectionString , function (err, client) {
         if (err) throw err
         let db = client.db('weather')
-        db.collection(state).find()
+
+        db.collection(state).find(query)
         .toArray(function (err, result) {
             res.header('Access-Control-Allow-Origin', ['*']);
             if (err) throw err
