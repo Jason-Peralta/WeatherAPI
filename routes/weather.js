@@ -13,17 +13,19 @@ router.get('/:state', function(req, res, next) {
     let queryStr = JSON.stringify(queryObj)
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|eq|ne)\b/g, rOperator => `$${rOperator}`);
 
+    //act
     MongoClient.connect(connectionString , function (err, client) {
         if (err) throw err
         let db = client.db('weather')
-
-        db.collection(state).find(queryStr)
+//{"actual_max_temp":{"$eq":"104"}}
+        db.collection(state).find(JSON.parse(queryStr))
         .toArray(function (err, result) {
             res.header('Access-Control-Allow-Origin', ['*']);
             if (err) throw err
 
             console.log(result)
             res.send(result);
+            console.log(queryStr)
         })
     })
 });
